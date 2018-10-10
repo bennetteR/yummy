@@ -1,5 +1,6 @@
 ul.day-container {
-    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 div.date {

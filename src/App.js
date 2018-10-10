@@ -5,6 +5,11 @@ import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import './styles/App.css';
 import Day from './components/day';
+import SearchInput from './components/searchInput';
+import Modal from 'react-modal';
+import AddMealModal from './containers/addmealModalContainer';
+
+import * as data from './data/data.json'
 
 class App extends Component {
 
@@ -13,105 +18,47 @@ class App extends Component {
     this.state = {
       date: null,
       focused: null,
-      renderResults: []
+      renderResults: [],
+      modalIsOpen: false
     };
 
-    moment.locale('fr', {
+    moment.updateLocale('fr', {
       months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
       weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
       weekdays : 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_')
    });
 
-   //this.onDateChange = this.onDateChange.bind(this);
-   //this.renderResults = this.renderResults.bind(this);
-   
-   this.data = [
-    {
-        "date": "06/10/2018",
-        "guests": ["elise", "damien"],
-        "daytime": "midi",
-        "meals": [
-            {
-                "type": "Apéro",
-                "name": "Toats chèvre pain épice",
-                "url": ""
-            },
-            {
-              "type": "Viande",
-              "name": "Brochettes boeuf",
-              "url": ""
-            },
-            {
-              "type": "Légumes",
-              "name": "Purée patates douces",
-              "url": ""
-            },
-            {
-              "type": "Dessert",
-              "name": "Gâteau noix",
-              "url": ""
-            }
-        ]
-    },
-    {
-        "date": "10/10/2018",
-        "guests": ["benoit", "murielle"],
-        "daytime": "midi",
-        "meals": [
-          {
-            "type": "Apéro",
-            "name": "Toats chèvre pain épice",
-            "url": ""
-        },
-        {
-          "type": "Viande",
-          "name": "Brochettes boeuf",
-          "url": ""
-        },
-        {
-          "type": "Légumes",
-          "name": "Purée patates douces",
-          "url": ""
-        },
-        {
-          "type": "Dessert",
-          "name": "Gâteau noix",
-          "url": ""
-        }
-        ]
-    },
-    {
-      "date": "10/10/2018",
-      "guests": ["guillaume", "Noelie", "elise", "damien"],
-      "daytime": "soir",
-      "meals": [
-        {
-          "type": "Apéro",
-          "name": "Toats chèvre pain épice",
-          "url": ""
-      },
-      {
-        "type": "Viande",
-        "name": "Brochettes boeuf",
-        "url": ""
-      },
-      {
-        "type": "Légumes",
-        "name": "Purée patates douces",
-        "url": ""
-      },
-      {
-        "type": "Dessert",
-        "name": "Gâteau noix",
-        "url": ""
-      }
-      ]
+  this.customStyles = {
+    content : {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width: '600px',
+      height: '600px',
+      border: '1px solid #EBEBEB',
+      borderRadius: '4px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+    }
+  };
+  
+  this.data = data.default;
   }
-]
+
+  //TODO remove when removing container
+  componentWillMount(){
+    this.props.fetchAllMeals();
+  }
+
+  searchBy(query){
+    var results = this.data.filter(value=>value.guests.includes(query));
+    this.setState({ renderResults: results });
   }
 
   onDateChange(date) {
-    this.setState({ date, renderResults: false })
+    this.setState({ date, renderResults: false });
     const dateFormatted = moment(date).format('DD/MM/YYYY');
     var results = this.data.filter(value=>value.date === dateFormatted);
     this.setState({ renderResults: results });
@@ -120,11 +67,18 @@ class App extends Component {
   renderResults() {
     if (this.state.renderResults.length > 0) {
       var results = this.state.renderResults;
-      var date = moment(this.state.date).format('dddd DD MMMM YYYY');
-      return <Day results={ results } date={ date }></Day>
+      return <Day results={ results }></Day>
     } else {
       return null;
     }
+  }
+
+  openModal() {
+    this.setState({modalIsOpen: true});
+  }
+
+  closeModal() {
+    this.setState({modalIsOpen: false});
   }
 
   render() {
@@ -134,12 +88,18 @@ class App extends Component {
           <div><span className="title">YUMMY</span> The free meals recorder</div>
         </header>
         <div className="container">
+          <div className="addMealContainer">
+          <button className="addMealButton" onClick={ this.openModal.bind(this) }>
+            <div className="addMealButtonIcon">+</div>
+            <div className="addMealButtonLabel">Ajouter un repas</div>
+          </button>
+          </div>
           <div className="searchFormContainer">
             <div className="searchLabel">
               Chercher par invités, plat ou type
             </div>
             <div className="searchForm">
-                <input type="text" placeholder="Essayer « Elise » ou « gratin »" />
+                <SearchInput searchBy={ this.searchBy.bind(this) }/>
             </div>  
           </div>
           <div className="datePickerContainer">
@@ -152,15 +112,23 @@ class App extends Component {
               onDateChange={date => this.onDateChange(date)} // PropTypes.func.isRequired
               focused={this.state.focused} // PropTypes.bool
               onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
-              id="your_unique_id" // PropTypes.string.isRequired
+              id="datePickerSearchMeal" // PropTypes.string.isRequired
               isOutsideRange={() => false}
               displayFormat="DD/MM/YYYY"
             />
           </div>
-          <div className="resultsContainer">
-            { this.renderResults() }
-          </div>
         </div>
+        <div className="resultsContainer">
+            { this.renderResults() }
+        </div>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.closeModal.bind(this)}
+          ariaHideApp={ false }
+          style={ this.customStyles }
+        >
+        <AddMealModal/>
+        </Modal>
       </div>
     );
   }
