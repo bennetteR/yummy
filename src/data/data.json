@@ -1,7 +1,10 @@
-{"meals": [
+{
+  "meals": 
+  [
     {
+        "id" : 1,
         "date": "06/10/2018",
-        "guests": ["elise", "damien"],
+        "guests": [1,2],
         "daytime": "midi",
         "dishes": [
             {
@@ -27,8 +30,9 @@
         ]
     },
     {
+        "id" : 2,
         "date": "10/10/2018",
-        "guests": ["benoit", "murielle"],
+        "guests": [3,4],
         "daytime": "midi",
         "dishes": [
           {
@@ -54,8 +58,9 @@
         ]
     },
     {
+      "id" : 3,
       "date": "10/10/2018",
-      "guests": ["guillaume", "Noelie", "elise", "damien"],
+      "guests": [3,4,5],
       "daytime": "soir",
       "dishes": [
         {
@@ -80,4 +85,43 @@
       }
       ]
     }
+],
+"guests": 
+[
+  {
+    "id": 1,
+    "firstname": "elise",
+    "lastname": "lagrange",
+    "alias": ""
+  },
+  {
+    "id": 2,
+    "firstname": "damien",
+    "lastname": "",
+    "alias": ""
+  },
+  {
+    "id": 3,
+    "firstname": "benoit",
+    "lastname": "",
+    "alias": ""
+  },
+  {
+    "id": 4,
+    "firstname": "murielle",
+    "lastname": "",
+    "alias": ""
+  },
+  {
+    "id": 5,
+    "firstname": "",
+    "lastname": "",
+    "alias": "maman"
+  },
+  {
+    "id": 6,
+    "firstname": "agnès",
+    "lastname": "",
+    "alias": ""
+  }
 ]}

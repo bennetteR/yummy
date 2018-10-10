@@ -2,6 +2,20 @@ import React from 'react';
 import moment from 'moment';
 
 class Daytime extends React.Component {
+    componentWillMount() {
+      this.guests = this.props.guests.guests.filter(guest => this.props.details.guests.includes(guest.id))
+      .map(guest => {
+        if (guest.alias !== ''){
+          return guest.alias;
+        } else if (guest.firstname !== '') {
+          if (guest.lastname !== ''){
+            return guest.firstname + ' ' + guest.lastname
+          } 
+        }
+        return guest.firstname;
+      });
+    }
+
     render() {
       var details = this.props.details;
       var liKey = this.props.liKey;
@@ -10,7 +24,7 @@ class Daytime extends React.Component {
           <li key={ liKey } className="daytime-card">
             <div className="daytime">{date} ({ details.daytime })</div>
             <ul className="guests">Invités : 
-            {details.guests.map((guest, i)=> {
+            {this.guests.map((guest, i)=> {
               return (
                 
                   <li key={ i } className="guest"><span>{ guest }</span></li>

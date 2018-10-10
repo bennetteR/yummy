@@ -1,13 +1,15 @@
 import { connect } from 'react-redux';
 import App from '../App';
-import { fetchAllMeals } from '../actions/actions';
+import { fetchAllMeals, fetchAllGuests } from '../actions/actions';
 
 const mapStateToProps = (state) => ({
-    meals: state.meals
+    meals: state.meals,
+    guests: state.guests
   });
 
 const mapDispatchToProps = {
-    fetchAllMeals
+    fetchAllMeals,
+    fetchAllGuests
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

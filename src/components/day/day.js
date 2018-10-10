@@ -1,5 +1,5 @@
 import React from 'react';
-import Daytime from './../daytime';
+import Daytime from '../../containers/daytime';
 
 class Day extends React.Component {
     render() {

@@ -9,8 +9,6 @@ import SearchInput from './components/searchInput';
 import Modal from 'react-modal';
 import AddMealModal from './containers/addmealModalContainer';
 
-import * as data from './data/data.json'
-
 class App extends Component {
 
   constructor(props) {
@@ -43,13 +41,12 @@ class App extends Component {
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
     }
   };
-  
-  this.data = data.default;
   }
 
   //TODO remove when removing container
   componentWillMount(){
     this.props.fetchAllMeals();
+    this.props.fetchAllGuests();
   }
 
   searchBy(query){
@@ -58,9 +55,10 @@ class App extends Component {
   }
 
   onDateChange(date) {
+    var meals = this.props.meals.meals;
     this.setState({ date, renderResults: false });
     const dateFormatted = moment(date).format('DD/MM/YYYY');
-    var results = this.data.filter(value=>value.date === dateFormatted);
+    var results = meals.filter(value=>value.date === dateFormatted);
     this.setState({ renderResults: results });
   }
 

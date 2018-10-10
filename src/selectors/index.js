@@ -1,12 +1,16 @@
 import { createSelector } from 'reselect';
 
-export const getMeals = state => state.meals;
+//TODO find a way to put meals at root of store
+export const getMeals = state => state.meals.meals;
 
-export const getGuests = createSelector(
-    [getMeals],
-    meals => {
-        console.log(meals)
-        console.log(meals[0])
-        return meals.map(meals.guests)
-    }
+//TODO find a way to put guests at root of store
+export const getGuests = state => state.guests.guests;
+
+//getMealId
+//getGuestsIds
+//getGuestsNamesById
+
+export const getGuestById = createSelector(
+    [getGuests],
+    guests => guests.find(guest => guest.id === 1)
 );
