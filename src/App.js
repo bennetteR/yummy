@@ -47,11 +47,18 @@ class App extends Component {
   componentWillMount(){
     this.props.fetchAllMeals();
     this.props.fetchAllGuests();
+    this.guests = this.props.guests.guests;
   }
 
   searchBy(query){
-    var results = this.data.filter(value=>value.guests.includes(query));
-    this.setState({ renderResults: results });
+    var meals = this.props.meals.meals;
+    var guests = this.props.guests.guests;
+    var guestFound = guests.filter(guest=>(guest.firstname === query || guest.lastname === query || guest.alias === query));
+    if (guestFound.length > 0){
+      var guestId = guestFound[0].id;
+      var results = meals.filter(value=>value.guests.includes(guestId));
+      this.setState({ renderResults: results });
+    }
   }
 
   onDateChange(date) {
