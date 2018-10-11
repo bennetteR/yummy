@@ -2,6 +2,7 @@ import React from 'react';
 import { Errors, Control, Form } from 'react-redux-form';
 import * as validators from '../../helpers/form-validators';
 import { SingleDatePicker } from 'react-dates';
+import Select from 'react-select'
 
 class AddMealModal extends React.Component {
 
@@ -22,8 +23,14 @@ class AddMealModal extends React.Component {
         this.setState({ date, renderResults: false });
     }
 
+    renderOptions() {
+        return this.props.registeredGuests.map((guest) => ({
+            value: guest.id,
+            label: guest.alias !== '' ? guest.alias : guest.firstname + ' ' + guest.lastname
+        }));
+      }
+
     render(){
-        console.log(this.props.registeredGuests)
         return (
             <Form
                 className='meal-form'
@@ -31,8 +38,8 @@ class AddMealModal extends React.Component {
                 validators={{ title: { required: validators.required, maxLength: validators.maxLength(80) } }}
                 onSubmit={values => this.handleSubmit(values)}
             >
-                <h3>Ajouter un repas</h3>
-                <h4 className='form-title left'>Sélectionner une date</h4>
+                <h3>Nouveau repas</h3>
+                <h4 className='form-title left'>Sélectionnez une date</h4>
                 <Control.custom 
                     model='.date'
                     component={ SingleDatePicker }
@@ -48,7 +55,7 @@ class AddMealModal extends React.Component {
                       }}
                 />
                
-                <h4 className='form-title left'>Sélectionner un repas</h4>
+                <h4 className='form-title left'>Sélectionnez un repas</h4>
                 <div className='fieldset no-margin-top small-margin-bottom'>
                     <Control.radio 
                         model='.daytime'
@@ -78,10 +85,17 @@ class AddMealModal extends React.Component {
                 </div>
 
                 <h4 className='form-title left'>Invités</h4>
+                <h5>Choisissez parmi les invités existants :</h5>
                 <div className='fieldset no-margin-top small-margin-bottom'>
-                    <Control.textarea mapProps={{ className: validators.getValidityClass }}
-                        type='text' model='.description' placeholder='' validateOn='blur' rows='10' />
+                    <Control
+                        model='.guests' 
+                        component={ Select } 
+                        isMulti
+                        options={ this.renderOptions() }
+                    />
                 </div>
+
+                <h5>Ou ajoutez un invité</h5>
 
                 <h4 className='form-title left'>Program Title</h4>
                 <div className='fieldset no-margin-top small-margin-bottom'>
